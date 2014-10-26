@@ -1,0 +1,30 @@
+{
+  "name": "sailor",
+  "version": "0.0.1",
+  "authors": [
+    "mrfishie <me@mrfishie.com>"
+  ],
+  "description": "The #1 way to win the internet with SailsJS",
+  "main": "lib/sailor.js",
+  "keywords": [
+    "sails",
+    "model",
+    "bind",
+    "socket.io",
+    "websocket",
+    "magic"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "lodash": "~2.4.1",
+    "bluebird": "~2.3.7",
+    "sails.io.js": "~0.10.3"
+  }
+}
