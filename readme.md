@@ -1,8 +1,8 @@
-# Introduction
+# [<img src="http://i.imgur.com/VjhXaUr.png" alt="Sailor logo" title="Sailor" width="804px" />](http://github.com/mrfishie/sailor)
 
 **The #1 way to win the internet with [Sails](http://sailsjs.org/)**
 
-Sailor lets you access server-side models as if they were in the browser, with some added treats.
+Sailor lets you access [Sails](http://sailsjs.org/) server-side models as if they were in the browser, with some added treats.
 
 # Getting Started
 
