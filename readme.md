@@ -4,17 +4,17 @@
 
 Sailor lets you access [Sails](http://sailsjs.org/) server-side models as if they were in the browser, with some added treats.
 
-# Getting Started
+## Getting Started
 
 To use Sailor, clone this repo or install with Bower (preferred)
 
-	bower install sailor --save
+	bower install sailor-client --save
 
 Sailor requires [Lo-Dash](https://lodash.com/) and [Bluebird](https://github.com/petkaantonov/bluebird).
 
 Check out the basics or the API documentation.
 
-# The Basics
+## The Basics
 
 *Tell Sailor about your model:*
 
@@ -62,7 +62,7 @@ Check out the basics or the API documentation.
 		console.log("Destroyed the user");
 	});
 
-## Model Definitions
+### Model Definitions
 
 When defining models in your Sails server application, Sails allows you to define methods that can be called on a model. Sailor allows you to do this too, as well as define properties that are not saved on the server.
 
@@ -78,7 +78,7 @@ When defining models in your Sails server application, Sails allows you to defin
 
 You can return a promise from this function to only set the value when the promise is resolved.
 
-## Model Connections
+### Model Connections
 
 Connections between models are an important part of any database-based application. Since Sails only provides a certain depth of models in models through its websocket interface, you can easily tell Sailor when a model connects to another.
 
@@ -88,7 +88,7 @@ Connections between models are an important part of any database-based applicati
 
 Sailor supports cyclic connections - two objects can connect to each other.
 
-## Calculated Functions
+### Calculated Functions
 
 Sometimes you might only want to run a function when the model changes, and then store its value. You can do this in Sailor.
 
@@ -101,7 +101,7 @@ Sometimes you might only want to run a function when the model changes, and then
 
 You can return a promise from this function for asynchronous calculations.
 
-## Model Class Definitions
+### Model Class Definitions
 
 In addition to being able to define model definitions, you can also define a set of properties to be applied to the model object.
 
