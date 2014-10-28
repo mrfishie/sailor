@@ -23,14 +23,14 @@ Check out the basics or the API documentation.
 *Access items in your model:*
 	
 	sailor.users.on('ready', function() {
-		sailor.users; // [...items]
+		console.log(sailor.users); // [...items]
 	});
 
 *Bind the model to another object:*
 
 	var myObject = {};
 	sailor.bind("users", myObject, "Users"); // or sailor.users.bind(myObject, "Users");
-	myObject.Users; // [...items]
+	console.log(myObject.users); // [...items]
 
 *Filter a model with Waterline:*
 
