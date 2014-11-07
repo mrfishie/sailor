@@ -1,0 +1,38 @@
+{
+  "name": "angular-anchorjs",
+  "version": "0.1.4",
+  "authors": [
+    "mrfishie <me@mrfishie.com>"
+  ],
+  "description": "An Angular wrapper for anchorjs (github.com/bryanbraun/anchorjs)",
+  "main": "lib/angular-anchor.js",
+  "keywords": [
+    "angular",
+    "anchor",
+    "wrapper",
+    "title",
+    "link",
+    "section"
+  ],
+  "license": "MIT",
+  "homepage": "http://github.com/mrfishie/angular-anchorjs",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "angular": "~1.3.1"
+  },
+  "_release": "0.1.4",
+  "_resolution": {
+    "type": "version",
+    "tag": "0.1.4",
+    "commit": "768a76c09932af2db7d110af9c583cb3314933af"
+  },
+  "_source": "git://github.com/mrfishie/angular-anchorjs.git",
+  "_target": "~0.1.2",
+  "_originalSource": "angular-anchorjs"
+}

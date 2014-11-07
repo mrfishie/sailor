@@ -1,0 +1,373 @@
+@import "compass";
+@import "compass/css3/selection";
+@import "compass/reset";
+
+$dark-theme: #2b5797;
+$light-theme: lighten($dark-theme, 10%);
+$lighter-theme: lighten($dark-theme, 40%);
+$page-width: 1200px;
+$header-height: 43px;
+$real-header-height: $header-height + 20px;
+$code-bg: #F8F8F8;
+
+html, body {
+    font-family: 'Roboto', sans-serif;
+    font-weight:300;
+    line-height:1.5em;
+
+    &, .wrap, .view {
+        height:100%;
+    }
+}
+
+h1, h2, h3, h4, h5, h6, strong {
+    font-weight:bold;
+}
+
+// Heading sizes
+$header-scale-top: 2.5em;
+$header-scale-bottom: 1em;
+@for $i from 0 to 6 {
+    h#{$i + 1} {
+        $font-size: $header-scale-top - (($i / 5) * ($header-scale-top - $header-scale-bottom));
+        font-size: $font-size;
+        margin-bottom:#{$font-size / ($font-size * 0 + 1) * 10}px;
+
+        &[id]:before {
+            content:' ';
+            display:block;
+            height:$real-header-height + 20px;
+            margin:-($real-header-height + 20px) 0 0;
+        }
+    }
+}
+
+// Selection colours
+* {
+    @include selection(rgba(lighten($dark-theme, 20%), 0.5));
+}
+
+a {
+    color:$light-theme;
+    &:hover {
+        text-decoration:none;
+    }
+}
+
+code {
+    font-family: 'Inconsolata', monospace;
+    background-color:$code-bg!IMPORTANT;
+    padding:0.2em!IMPORTANT;
+    border:solid 1px #CCC;
+    display:inline-block;
+}
+pre {
+    display:block;
+    padding:8px;
+    border:solid 1px #CCC;
+    background-color:$code-bg;
+
+    code {
+        border:none;
+        margin:0;
+    }
+}
+
+p {
+    margin:10px 0;
+}
+
+em {
+    font-style:italic;
+}
+
+ul {
+    list-style:disc;
+    li {
+        margin-left:20px;
+    }
+}
+
+.wrapper {
+    max-width:1200px;
+    @include box-sizing(border-box);
+    margin:0 auto;
+}
+
+.nav, .secondNav {
+    position:fixed;
+    left:0;
+    right:0;
+    height:$real-header-height;
+
+    a, div.nav-div a {
+        display:inline-block;
+        vertical-align:top;
+        padding:10px;
+        height:$header-height;
+        line-height:$header-height;
+
+        color:#FFF;
+        text-decoration:none;
+
+        &.active, &:hover {
+            @include transition(background-color 0.25s);
+        }
+    }
+
+    div.nav-div {
+        display:inline-block;
+        vertical-align:top;
+
+        &.active a, &:hover a {
+            @include transition(background-color 0.25s);
+        }
+
+        .nav-functions {
+            display:none;
+            position:absolute;
+            top:$real-header-height;
+
+            a {
+                display:block;
+                height:auto;
+                line-height:1em;
+            }
+        }
+
+        &:hover .nav-functions, .nav-functions:hover {
+            display:block;
+        }
+    }
+}
+
+.nav {
+    top:0;
+    background-color:$dark-theme;
+
+    .nav-functions {
+        background-color:$dark-theme;
+    }
+
+    a.active, a:hover, div.nav-div.active > a {
+        background-color:$light-theme;
+    }
+}
+
+.secondNav {
+    top:$real-header-height;
+    background-color:$light-theme;
+
+    a.active, a:hover, div.nav-div.active > a {
+        background-color:lighten($dark-theme, 20%);
+    }
+
+    .nav-functions {
+        background-color:$light-theme;
+    }
+}
+
+.wrap {
+    margin-top:$real-header-height;
+}
+
+.hero {
+    height:calc(100% - 500px);
+    min-height:400px;
+    background:$dark-theme url(../img/tiled-bg.png);
+
+    .wrapper {
+        height:200px;
+        min-width:1000px;
+        padding-top:100px;
+        color:white;
+    }
+
+    code {
+        font-weight:normal;
+        padding:10px!IMPORTANT;
+        color:black;
+    }
+
+    a {
+        color:$lighter-theme;
+    }
+}
+
+.title {
+    height:200px;
+    background:$dark-theme;
+
+    .wrapper {
+        height:100px;
+        min-width:1000px;
+        padding-top:100px;
+        color:white;
+    }
+}
+
+.page {
+    margin-bottom:30px;
+    padding:20px 0;
+
+    &:nth-child(even), &.bg {
+        background-color:#F1F1F1;
+    }
+}
+
+.push-box {
+    @include display-flex;
+    @include flex-direction(row);
+    @include justify-content(center);
+    @include align-items(center);
+
+    .push {
+        @include flex-grow(1);
+    }
+}
+
+a.button {
+    background-color:$light-theme;
+    display:inline-block;
+    padding:0.5em;
+    color:white;
+    font-size:1.5em;
+    text-decoration:none;
+
+    &:hover {
+        @include transition(background-color 0.25s);
+        background-color:lighten($dark-theme, 20%);
+    }
+
+    &.no-bg {
+        background-color:transparent;
+        color:black;
+        &:hover {
+            text-decoration:underline;
+        }
+    }
+}
+
+.button-set {
+    text-align:center;
+
+    .button:nth-child(even) {
+        @extend a.button.no-bg;
+    }
+}
+
+.footer {
+    background-color:$light-theme;
+    color:white;
+
+    a {
+        color:$lighter-theme;
+    }
+    .wrapper {
+        padding:50px 0;
+    }
+
+    img {
+        vertical-align:middle;
+        margin:0 5px;
+    }
+}
+
+a.anchor-link {
+    opacity:0;
+    text-decoration:none;
+    float:left;
+    color:#CCC;
+
+    &:hover {
+        color:$lighter-theme;
+    }
+}
+.anchored {
+    margin-left:-0.9em;
+
+    &:hover > a.anchor-link, a.anchor-link:focus {
+        transition:opacity 0.2s;
+        opacity:1;
+    }
+}
+.icon-link {
+    font-size:90%;
+    padding-right:10px;
+
+    &:before {
+        content: "§";
+    }
+}
+
+.interesting {
+    padding:10px;
+    border-top:solid 5px $dark-theme;
+    background: /*#F8F8F8*/rgba(200, 200, 200, 0.2) url(../img/info.png) no-repeat;
+}
+
+.docs {
+    margin-top:$real-header-height * 2;
+
+    .class, h2, h3, h4, h5, h6 {
+        &:before {
+            content:" ";
+            display:block;
+            height: $real-header-height * 2 + 20px;
+            margin: -($real-header-height * 2 + 20px) 0 0;
+        }
+    }
+
+    .class:before {
+        height: $real-header-height * 2 ;
+        margin: -($real-header-height * 2) 0 0;
+    }
+}
+
+.class-header {
+    background-color:$dark-theme;
+    padding:40px 0;
+    color:#FFF;
+
+    h1 {
+        margin:0;
+    }
+}
+
+.class > div > .description {
+    background-color:$lighter-theme;
+    padding:10px 0;
+}
+
+.func-return {
+    font-size:1.2em;
+}
+
+.argument {
+    padding:5px;
+    border:solid 1px #CCC;
+    border-top:none;
+
+    &:nth-child(odd) {
+        background-color:#F1F1F1;
+    }
+    &:nth-child(even) {
+        background-color:#FFF;
+    }
+    &:nth-child(1) {
+        border-top:solid 1px #CCC;
+    }
+
+    .arg-head {
+        margin:0;
+        //font-size:1.1em;
+    }
+
+    .arg-descript {
+        border-top:solid 1px #CCC;
+        margin-top:5px;
+        &.empty {
+            border-top:none;
+        }
+    }
+}

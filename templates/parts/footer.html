@@ -1,0 +1,17 @@
+<div class="page button-set">
+    <a ng-repeat="button in buttons"
+       ng-if="button.footerVisible"
+       ng-href="{{button.url}}"
+       title="{{button.navText}}"
+       target="{{button.target || '_self'}}"
+       class="button">
+        <fa name="{{button.bigIcon}}"></fa> {{button.bigText}}
+    </a>
+</div>
+
+<div class="footer"><div class="wrapper">
+    <p>
+        Coded by<a href="http://mrfishie.com" title="mrfishie.com"><img src="assets/img/mrfishie.png">mrfishie</a>.
+        Inspired by <a href="http://sailsjs.org/" title="SailsJS" target="_blank">Sails</a>.
+    </p>
+</div></div>

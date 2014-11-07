@@ -1,0 +1,320 @@
+<div class="title"><div class="wrapper">
+    <h1>Getting Started Guide</h1>
+</div></div>
+
+<div class="page"><div class="wrapper">
+    <h2 anchored>Installation</h2>
+    <p>
+        For using Sailor, we recommend <a href="http://bower.io/" title="Bower Package Manager">Bower</a>; a web component
+        package manager that makes your websites even more awesome. Don't worry, we'll wait for you to install it.
+    </p>
+    <p>
+        Once Bower is installed, head into the <code>assets</code> folder of your Sails site, and run the command
+    </p>
+        <pre><code>$ bower init</code></pre>
+    <p>
+        Bower will run you through a first-time project setup, and then you can get sailing!
+    </p>
+    <p>
+        Once you have setup your project, run the Bower install command to install Sailor
+    </p>
+    <pre><code>$ bower install sailor-client --save</code></pre>
+    <p>
+        Bower will download Sailor, and its dependencies, and now your ready to start using Sailor!
+    </p>
+</div></div>
+
+<div class="page"><div class="wrapper">
+    <h4 anchored>Don't want to use Bower?</h4>
+    <p>
+        No problem! Just clone the Sailor git repo, or
+        <a href="https://github.com/mrfishie/sailor/archive/master.zip" title="Download Sailor as a ZIP">download a zip file</a>.
+    </p>
+    <pre><code>$ git clone git://github.com/mrfishie/sailor.git</code></pre>
+    <p>
+        Keep in mind that Sailor also requires <a href="https://github.com/petkaantonov/bluebird" title="Bluebird">Bluebird</a>
+        and <a href="https://lodash.com/" title="Lodash">Lodash</a>, so you will need to manually install those too.
+    </p>
+
+    <div class="interesting">
+        <p>
+            In the Sailor docs, and many other library docs, commands to be entered into a terminal are often represented
+            with a dollar-sign. This is to represent the prompt (the current path) in your terminal, and shouldn't actually
+            be entered when typing in a command.
+        </p>
+    </div>
+</div></div>
+
+<div class="page"><div class="wrapper">
+    <h2 anchored>Makin' Models</h2>
+    <p>
+        The whole purpose of Sailor is to provide you with access to your Waterline (Sails) models as if you were on the
+        server. To do this, you first need to tell Sailor the name of the model, using the <code>sailor.model()</code>
+        function.
+    </p>
+    <div hljs lang="javascript">
+var users = sailor.model("user");</div>
+    <p>Now, we can access our users from the <code>sailor.users</code> object.</p>
+
+    <div class="interesting">
+        <p>Sailor automatically binds models onto the Sailor object, using a pluralized version of the model name.</p>
+        <p>The model object is also returned from the <code>sailor.model()</code> function.</p>
+    </div>
+</div></div>
+
+<div class="page"><div class="wrapper">
+    <h2 anchored>The Model Object</h2>
+    <p>
+        The <code>sailor.model()</code> function creates a model object - this is used to hold all of the model items from the
+        server, as well as providing some more functionality such as events, filtering, creation, model connections, and more.
+    </p>
+    <p>
+        A model object is a plain old Javascript array, with a few functions attached to it. As a result, you can iterate
+        over the items, or modify them as you would with a normal array.
+    </p>
+</div></div>
+
+<div class="page"><div class="wrapper">
+    <h2 anchored>Using the Data</h2>
+    <p>
+        Before we can actually read anything from a model object, we need to wait for the <code>ready</code> event to be fired.
+        Sailor has a simple, jQuery-esque event system for model objects, allowing you to use the <code>.on()</code> and
+        <code>.off()</code> functions to bind and unbind events, respectively.
+    </p>
+    <div hljs lang="javascript">
+sailor.users.on('ready', function() {
+    for (var i = 0; i < sailor.users.length; i++) {
+        alert(sailor.users[i].username);
+    }
+});</div>
+    <br />
+    <div class="interesting">
+        <p>You can still do other operations on model objects before they are ready, such as filtering and creating.</p>
+    </div>
+</div></div>
+
+<div class="page"><div class="wrapper">
+    <h2 anchored>Filtering...</h2>
+    <p>
+        An important part of any database is filtering to find certain information. Sailor allows you to execute
+        Waterline-style filters on any model using the <code>.find()</code> and <code>.findOne()</code> functions.
+    </p>
+    <p>
+        Unlike getting information from models, you don't have to wait for a model to be ready to filter models.
+    </p>
+    <div hljs lang="javascript">
+sailor.users.find({ rank: 'admin' }).on('ready', function(admins) {
+        alert('There are ' + admins.length + ' admins');
+});
+sailor.users.findOne({ username: currentUserName }).then(function(me) {
+    alert('My name is ' + me.firstName + ' ' + me.lastName);
+});</div>
+    <p>
+        The <code>.find()</code> function actually returns another model object, so anything you can do on a normal
+        model you can do on a filtered one, including sub-filtering.
+    </p>
+
+    <div class="interesting">
+        <p>
+            Just like normal model objects, filtered model objects will automatically sync with the server. As a result,
+            Sailor can (and does) safely cache the results of a filter.
+        </p>
+    </div>
+</div></div>
+
+<div class="page"><div class="wrapper">
+    <h2 anchored>...and Searching</h2>
+    <p>
+        Of course, filtering a model object requires a request to the server, to execute the filter. Sailor, however,
+        also allows you to execute simple 'searches' on the client, by allowing you to provide a set of required
+        keys and values that should be present on each model item. There are two functions that can be used:
+        <code>.search()</code> and <code>.searchAsync()</code>.
+    </p>
+    <div hljs lang="javascript">
+sailor.users.on('ready', function() {
+    var admins = sailor.search({ rank: 'admin' });
+    alert('There are ' + admins.length + ' admins');
+
+    var moderators = sailor.search({ rank: ['moderator', 'admin'] });
+    alert('There are ' + moderators.length + ' moderators');
+});
+
+sailor.users.searchAsync({ username: ['me', 'you'] }).then(function(users) {
+    alert('There are ' + users.length + ' users named me or you');
+});</div>
+    <br />
+    <div class="interesting">
+        <p>
+            The difference between <code>.search()</code> and <code>.searchAsync()</code> is that <code>.searchAsync()</code>
+            first waits for the model to be ready, and then executes the search, whereas <code>.search()</code> simply searches
+            through the currently fetched items.
+        </p>
+        <p>
+            Both functions return (or pass through a promise) a plain array containing the found items.
+        </p>
+    </div>
+</div></div>
+
+<div class="page"><div class="wrapper">
+    <h2 anchored>Creating Items</h2>
+    <p>
+        Sailor makes creating new items super-easy. When you create a model, a constructor is created on the <code>sailor</code>
+        object that allows you to create new instances of the model item.
+    </p>
+    <p>
+        The constructor allows you to pass a set of properties to be immediately set to the newly applied object, but you
+        can also save changes after doing some modifications.
+    </p>
+    <div hljs lang="javascript">
+var user = new sailor.user({ username: 'foobar' });
+user.age = 25;
+user.name = "John Doe";
+user.save().then(function() {
+    alert('Finished saving the user');
+});</div>
+    <p>
+        If your not a fan of the property modification style, you can also use the <code>.update()</code> function to
+        apply your changes.
+    </p>
+    <div hljs lang="javascript">
+user.update({
+    loginCount: user.loginCount + 1,
+    status: statusText.value
+}).then(function() {
+    alert('Finished updating the user');
+});</div>
+    <br />
+    <div class="interesting">
+        When you create a new item, it will be added to all of the model objects that fit the filter. When you save the item,
+        it will be removed from any model objects that don't fit, and added to any new ones.
+    </div>
+</div></div>
+
+<div class="page"><div class="wrapper">
+    <h2 anchored>Annihilating Items</h2>
+    <p>Not a fan of a specific model item? Want to destroy it forever? Don't worry.. we've got your back!</p>
+    <div hljs lang="javascript">
+user.destroy().then(function() {
+    alert('And its gone');
+});</div>
+    <br />
+    <div class="interesting">
+        <p>
+            Warning: we can not make any promises that the information contained within the item will be permanently
+            deleted, and may remain available on some government security agency servers.
+        </p>
+    </div>
+</div></div>
+
+<div class="page"><div class="wrapper">
+    <h2 anchored>Model Definitions</h2>
+    <p>
+        And now comes the fun part... model definitions! Sailor allows you to define properties and functions on each model
+        item that won't be synced to the server, as well as connections to other model types.
+    </p>
+    <p>
+        The <code>sailor.model()</code> function accepts two more parameters - the model definition and the model object
+        definition (which we will go into more detail about shortly). Both of these are just a plain object.
+    </p>
+
+    <div hljs lang="javascript">
+sailor.model("user", {
+    getFullName: function() {
+        return this.firstName + ' ' + this.lastName;
+    },
+    foo: "bar"
+});
+
+var firstUser = sailor.users[0];
+firstUser.firstName = "John";
+firstUser.lastName = "Doe";
+firstUser.getFullName(); // "John Doe"
+firstUser.foo; // "bar"</div>
+
+    <p>
+        To keep clarity in your model definitions, try to prefix any functions defined in the model definition with 'get'.
+    </p>
+</div></div>
+
+<div class="page"><div class="wrapper">
+    <h2 anchored>Model Connections</h2>
+    <p>
+        Isn't it just nice to be able to endlessly access sub-properties on infinitely cyclic objects? No? Well, Sailor's
+        model connection feature is still useful anyway. Normally, when grabbing database information from a Sails server,
+        connections only go a certain depth. This makes sense, of course, as you can't have an infinitely-long JSON response.
+    </p>
+    <p>
+        To overcome this, you can tell Sailor that a certain property is a connection to another model type in your
+        model definition, using the <code>sailor.model()</code> function.
+    </p>
+
+    <div hljs lang="javascript">
+sailor.model("user", {
+    topics: sailor.model("topic")
+});
+sailor.model("topic", {
+    author: sailor.model("user")
+});</div>
+    <br />
+    <div class="interesting">
+        If you want to modify what model item one item connects to, just change the connection property to the new index
+        (or indexes in the case of an array). When you save the model, Sailor will take care of the rest and fill the
+        property with the new array.
+    </div>
+</div></div>
+
+<div class="page"><div class="wrapper">
+    <h2 anchored>Calculated Functions</h2>
+    <p>
+        Sometimes you might only want to run a function when the model changes, and then store its value. Calculated
+        functions let you do this, with the <code>sailor.calculate()</code> function.
+    </p>
+
+    <div hljs lang="javascript">
+sailor.model("user", {
+    fullName: sailor.calculate(function() {
+        return this.firstName + ' ' + this.lastName
+    })
+});
+sailor.users[0].fullName; // "some string"</div>
+
+    <p>
+        The function is run every time the model is changed, and the result is placed into the property.
+    </p>
+
+    <div class="interesting">
+        If you want to do something asynchronous in the calculate function, you can return a Bluebird promise object,
+        and the property will only be set with its resolved value.
+    </div>
+</div></div>
+
+<div class="page"><div class="wrapper">
+    <h2 anchored>Model Object Definitions</h2>
+    <p>
+        In addition to being able to define model definitions, you can also define properties and functions to be
+        placed on the actual model object, with the third parameter of the <code>sailor.model()</code> function.
+    </p>
+
+    <div hljs lang="javascript">
+sailor.model("user", {
+    // model definitions...
+}, {
+    getRank: function(rank) {
+        return this.search({rank: rank});
+    }
+});
+
+var admins = sailor.users.getRank("admin"); // [...items]</div>
+</div></div>
+
+<div class="page"><div class="wrapper">
+    <h2 anchored>And thats it!</h2>
+    <p>
+        You're now on your way to winning the internet. Congratulations!
+    </p>
+    <p>
+        Want to hone your awesome Sailor skills even more? <a href="#/documentation" title="Sailor Documentation">Check out the documentation</a>!
+    </p>
+</div></div>
+
+<div ng-include="'templates/parts/footer.html'"></div>

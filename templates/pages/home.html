@@ -1,0 +1,86 @@
+<div class="hero"><div class="wrapper">
+    <h1>The #1 way to win the internet with <a href="http://sailsjs.org/" title="SailsJS" target="_blank">Sails</a>.</h1>
+    <h2><code>bower install sailor-client --save</code></h2>
+    <a class="button" href="#/getStarted">Get started</a>
+</div></div>
+
+<div class="page"><div class="wrapper">
+    <h2 anchored>What is Sailor?</h2>
+    <p>
+        <a href="http://sailsjs.org/" title="SailsJS" target="_blank">Sails</a> is awesome. Real-time single-page webapps are awesome.
+        But what if you want to combine them both? Sure, Sails has a websocket API that allows you to access your models
+        from the browser, but that is annoying. Sailor lets you access your models as if you were on the server, with
+        some extra treats. You can easily add, update, remove, watch, or even integrate with Angular. All that with
+        only a couple of lines of code.
+    </p>
+</div></div>
+
+<div class="page"><div class="wrapper">
+    <h2 anchored>Bind your models</h2>
+    <p>
+        See how easy it is to bind your Sails models to your browser-based Javascript code with Sailor.
+    </p>
+    <div hljs language="javascript">
+var users = sailor.model("user");
+users.findOne({id: currentUserId}).then(function(user) {
+    user.lastLogin = Date.now();
+    user.save();
+});
+
+users.on('change', function() {
+    $('.userList').empty();
+    for (var i = 0; i < users.length; i++) {
+        $("<div>" + users[i].username + "</div>").appendTo('.userList');
+    }
+});</div>
+</div></div>
+
+<div class="page"><div class="wrapper">
+    <h2 anchored>Specify connections</h2>
+    <p>
+        Sailor lets you specify connections between models, allowing for cyclic structures.
+    </p>
+    <div hljs language="javascript">
+var topics = sailor.model("topic", {
+    author: sailor.model("user"),
+    comments: sailor.model("comment")
+});
+var users = sailor.model("user", {
+    topics: sailor.model("topic")
+});</div>
+</div></div>
+
+<div class="page"><div class="wrapper">
+    <h2 anchored>Use with your favorite framework</h2>
+    <p>
+        Sailor doesn't care about what you are using for the rest of your website (except for Sails, of course), and as
+        a result, is easily integrated with your favorite web framework, be it Angular, Ember, Vue, Backbone, or anything
+        else.
+    </p>
+
+    <div hljs language="javascript">
+sailor.model("topic").bind($scope, "topics"); // bind a model to an Angular scope
+sailor.model("topic").bind(vm.$data, "topics"); // bind a model to a Vue model
+window.topics = Backbone.Model.extend(sailor.model("topic")); // bind a model to a Backbone model</div><br />
+
+    <h3 anchored>Angular Binding</h3>
+    <p>
+        While Sailor can be used with Angular out-of-the-box, you can install the <code>sailor-ng</code>
+        <a href="http://bower.io/" title="Bower Package Manager">Bower</a> package to make your site even more awesome
+        and automatically update the server when anything changes in your scope.
+    </p>
+
+    <div hljs language="javascript">
+sailor.model("topic").$bind($scope);</div>
+</div></div>
+
+<div class="page"><div class="wrapper">
+    <h2 anchored>What's Next?</h2>
+    <p>
+        Download via <a href="http://bower.io/" title="Bower Package Manager">Bower</a>:
+        <code>bower install sailor-client --save</code>
+    </p>
+    <p>Check out the <a href="http://github.com/mrfishie/sailor" title="Sailor on Github" target="_blank"><fa name="github"></fa> Github repo</a>.</p>
+</div></div>
+
+<div ng-include="'templates/parts/footer.html'"></div>

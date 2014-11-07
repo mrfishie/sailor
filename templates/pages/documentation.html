@@ -1,0 +1,301 @@
+<documentation>
+
+<class name="sailor">
+    <description></description>
+
+    <function name="model" returns="Model" return-descript="the model object">
+        <argument name="name" type="string" description="the name of the model"></argument>
+        <argument name="itemDef" type="object" description="the item definition" optional>
+            <p>
+                An item definition allows you to define properties and functions on each model item that are not synced with
+                the server. This allows for utility functions to be added, as well as connections
+                and pre-calculated properties (see <funcref class="sailor" func="calculate"></funcref>).
+            </p>
+
+            <div hljs lang="javascript">
+sailor.model("user", {
+    getFullName: function() {
+        return this.firstName + this.lastName;
+    },
+    dummyValue: '' // this property wont sync with the server
+});</div>
+        </argument>
+        <argument name="modelDef" type="object" description="the model definition" optional>
+            <p>
+                Model definitions allow you to define properties and functions on the model object itself. This allows
+                for utility functions to be added that are related to the model.
+            </p>
+            <div hljs lang="javascript">
+sailor.model("user", {}, {
+    getRank: function(rank) {
+        return this.search({rank: rank});
+    }
+});</div>
+        </argument>
+
+        <description>
+            <p>
+                Creates, updates, or gets a model from the Sails server. When creating the model, it is binded to
+                the <code>sailor</code> object, under a pluralized version of the name for the property
+                (<code>name + 's'</code>).
+            </p>
+            <p>
+                Creating the model also binds a singularized version of the name, containing a
+                <funcref class="ModelItem" func="constructor"></funcref> that can be used to create a new model item instance.
+            </p>
+        </description>
+    </function>
+    <function name="bind" returns="Model" return-descript="the model object">
+        <argument name="name" type="string" description="the name of the model"></argument>
+        <argument name="scope" type="object" description="the object to bind the model to"></argument>
+        <argument name="property" type="string" description="the property to bind the model to on the scope" optional>
+            <p>Default is a pluralized version of the name (<code>name + 's'</code>)</p>
+        </argument>
+        <argument name="filter" type="object" description="a filter to use on the model" optional>
+            <p>See <funcref class="ModelItem" func="filter"></funcref></p>
+        </argument>
+
+        <throws type="Error" when="the specified model does not exist"></throws>
+
+
+        <description>
+            <p>Binds a model to a property on an object.</p>
+            <div hljs lang="javascript">
+// For example, with Angular
+sailor.bind("user", $scope); // binds to the 'users' property on $scope
+sailor.bind("user", $scope, "admins", { rank: 'admin' }); // binds to the 'admins' property on $scope</div>
+        </description>
+    </function>
+    <function name="calculate" returns="object" return-descript="an object to be placed into the model item definition">
+        <argument name="calculator" type="*|Promise function<object flags>" description="the function to call">
+            <p>
+                <code>flags</code> is a list of flags that can be used to save state or read state from another part
+                of Sailor. List of built-in flags:
+            </p>
+            <ul>
+                <li><code>noRefresh</code> - If <code>true</code>, you should not refresh any models in the calculator</li>
+            </ul>
+            <p>
+                The calculator has the context of the actual model item that the property belongs to, with an added property
+                <code>_previous</code>, which contains the previous value of the property that is being overwritten by
+                the calculator.
+            </p>
+            <p>
+                The calculator should return the value to be placed into the property specified in the model, or return
+                a <code>Promise</code> object to asynchronously set the value of the property.
+            </p>
+                <div hljs lang="javascript">
+{
+    validUsers: sailor.calculate(function(flags) {
+        var previous = this._previous;
+        return new Promise(resolve) {
+            sailor.model('user').filter({ username: previous }).on('ready', resolve);
+        });
+    });
+}</div>
+        </argument>
+        <argument name="subProps" type="object" description="sub-properties to add to the pre-calculated property"></argument>
+
+        <description>
+            <p>
+                Allows for properties to be calculated based on other properties in a model item only when the item changes.
+            </p>
+
+            <div hljs lang="javascript">
+sailor.model('user', {
+    fullName: sailor.calculate(function() {
+        return this.firstName + this.lastName;
+    })
+});</div>
+        </description>
+    </function>
+</class>
+
+<class name="Model">
+    <description>
+        <p>
+            An array containing each model item which updates automatically upon modifications on the Sails server.
+            The <code>Model</code> class has all of the functions of an array, as well as some model-specific
+            functions.
+        </p>
+        <p>
+            Model objects can also be used as values in a model definition, and will then be used as a model 'connection'.
+        </p>
+    </description>
+
+    <function name="bind" returns="Model" return-descript="the model object">
+        <argument name="scope" type="object" description="the object to bind the model to"></argument>
+        <argument name="property" type="string" description="the property to bind on the scope" optional></argument>
+        <argument name="filter" type="object" description="an optional filter" optional></argument>
+
+        <description>
+            See <funcref class="sailor" func="bind"></funcref>
+        </description>
+    </function>
+    <function name="find" returns="Model" return-descript="the filtered model object">
+        <argument name="filter" type="object" description="the filter to execute"></argument>
+
+        <description>
+            <p>
+                Executes a filter on the Sails server, and creates a sub-filtered model object. Filters can be executed
+                on already filtered models, and filtered models will be updated in the same way normal models will.
+            </p>
+
+            <div hljs lang="javascript">
+sailor.model('user').filter({ rank: ['moderator', 'admin'] }).on('ready', function(items) {
+    alert('There are ' + items.length + ' moderators');
+});</div>
+        </description>
+    </function>
+    <function name="findOne" returns="Promise" return-descript="resolved when the filter has been executed">
+        <argument name="filter" type="object" description="the filter to execute"></argument>
+
+        <description>
+            <p>
+                Similar to <funcref class="Model" func="find"></funcref> except returns a <code>Promise</code>, and only
+                one value. If no values are found, the promise is resolved with <code>null</code> as the first parameter,
+                instead of the <code>ModelItem</code>.
+            </p>
+        </description>
+    </function>
+    <function name="search" returns="array<ModelItem>" return-descript="the model items that matched the filter">
+        <argument name="filter" type="object" description="the properties to match"></argument>
+
+        <description>
+            <p>
+                Similar to <funcref class="Model" func="find"></funcref> except executes a filter on the client, however
+                with limited features. Unlike <funcref class="Model" func="find"></funcref>, the results cannot be
+                sorted, and value matching is only available.
+            </p>
+            <p>
+                Pass in a list of key/value pairs to match. If an array is passed for the value, it will match any
+                one of the items in the array.
+            </p>
+        </description>
+    </function>
+    <function name="asyncSearch" returns="Promise" return-descript="resolved when the model is loaded">
+        <argument name="filter" type="object" description="the properties to match"></argument>
+
+        <description>
+            <p>
+                Executes a <funcref class="Model" func="search"></funcref>, but first waits for the model to be
+                ready (emit the <code>ready</code> event). Since the ready event is memorized, you can call this
+                function after the model has been loaded.
+            </p>
+        </description>
+    </function>
+    <function name="on">
+        <argument name="event" type="string" description="the name of the event"></argument>
+        <argument name="cb" type="function" description="the function to call">
+            <p>
+                Depending on the event, different parameters will be supplied.
+            </p>
+        </argument>
+
+        <description>
+            <p>
+                A simple event-subscribing function. Built-in events are:
+            </p>
+            <ul>
+                <li><code>ready</code> - fired after the model loads for the first time (memorized</li>
+                <li><code>created</code> - fired when a new item is added to the model</li>
+                <li><code>updated</code> - fired when an item is updated</li>
+                <li><code>removed</code> - fired when an item is removed</li>
+                <li><code>changed</code> - fired when the item list is changed</li>
+            </ul>
+            <p>If an event is memorized and has already fired, the callback will be called immediately.</p>
+        </description>
+    </function>
+    <function name="off">
+        <argument name="event" type="string" description="the name of the event"></argument>
+        <argument name="cb" type="function" description="the function to unsubscribe"></argument>
+
+        <description>
+            <p>
+                The opposite of <funcref class="Model" func="on"></funcref>; removes an event handler from an event
+                type.
+            </p>
+        </description>
+    </function>
+    <function name="refresh" returns="Promise" return-descript="resolved when all items are refreshed">
+        <description>
+            <p>
+                Refreshes all model items in the model. See <funcref class="ModelItem" func="refresh"></funcref>.
+            </p>
+        </description>
+    </function>
+</class>
+
+<class name="ModelItem">
+    <description>
+        <p>
+            A specific model item that is synced with the server.
+        </p>
+        <p>
+            Model items can also be used as values in a model definition, and will then be used as a model 'connection'.
+        </p>
+    </description>
+
+    <function name="constructor" returns="ModelItem" return-descript="the new model item">
+        <argument name="data" type="object" description="default data to populate the new model with" optional></argument>
+
+        <description>
+            <p>
+                Creates a new instance of the model item and syncs to the server with the supplied data.
+            </p>
+        </description>
+    </function>
+
+    <function name="update" returns="Promise" return-descript="resolved when the item has been updated">
+        <argument name="data" type="object" description="properties to update"></argument>
+        <argument name="sync" type="boolean" description="whether to sync changes with the server">
+            <p>Default is <code>true</code></p>
+        </argument>
+
+        <description>
+            <p>
+                Updates the model properties on the client, and if <code>sync</code> is <code>true</code>, the server
+                too.
+            </p>
+        </description>
+    </function>
+    <function name="save" returns="Promise" return-descript="resolved when the item has been saved">
+        <description>
+            <p>
+                Updates the model item on the server to reflect the object on the client.
+            </p>
+        </description>
+    </function>
+    <function name="serverProperties" returns="object" return-descript="the properties to be pushed to the server">
+        <argument name="props" type="object" description="a set of properties to iterate over">
+            <p>Default is the current model item</p>
+        </argument>
+
+        <description>
+            <p>
+                Prepares the object to be synced to the server, by removing properties in item definitions, and
+                correctly handling connections.
+            </p>
+        </description>
+    </function>
+    <function name="destroy" returns="Promise" return-descript="resolved when the item has been destroyed">
+        <description>
+            <p>
+                Deletes the model from the database.
+            </p>
+        </description>
+    </function>
+    <function name="matches" returns="Promise" return-descript="resolved when the query is complete">
+        <argument name="query" type="object" description="the filter to check"></argument>
+
+        <description>
+            <p>
+                Finds if the model item matches a given filter.
+            </p>
+        </description>
+    </function>
+</class>
+
+</documentation>
+
+<div ng-include="'templates/parts/footer.html'"></div>
