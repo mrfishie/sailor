@@ -1,115 +1,68 @@
-# [<img src="http://i.imgur.com/VjhXaUr.png" alt="Sailor logo" title="Sailor" width="804px" />](http://github.com/mrfishie/sailor)
+# [<img src="http://i.imgur.com/VjhXaUr.png" alt="Sailor logo" title="Sailor" width="804px" />](http://mrfishie.github.io/sailor)
 
 **The #1 way to win the internet with [Sails](http://sailsjs.org/)**
 
-Sailor lets you access [Sails](http://sailsjs.org/) server-side models as if they were in the browser, with some added treats.
+### `bower install sailor-client --save`
+### [Website](http://mrfishie.github.io/sailor) - [Getting Started](http://mrfishie.github.io/sailor/#/getStarted) - [Documentation](http://mrfishie.github.io/sailor/#/documentation)
 
-## Getting Started
+## What is Sailor?
 
-To use Sailor, clone this repo or install with Bower (preferred)
+[Sails](http://sailsjs.org/) is awesome. Real-time single-page webapps are awesome. But what if you want to combine them
+both? Sure, Sails has a websocket API that allows you to access your models from the browser, but that is annoying. Sailor
+lets you access your models as if you were on the server, with some added treats. You can easily add, update, remove,
+watch, or even integrate with Angular. All that with only a couple of lines of code.
 
-	bower install sailor-client --save
+## Bind your models
 
-Sailor requires [Lo-Dash](https://lodash.com/) and [Bluebird](https://github.com/petkaantonov/bluebird).
+See how easy it is to bind your Sails models to your browser-based Javascript code with Sailor.
 
-Check out the basics or the API documentation.
-
-## The Basics
-
-*Tell Sailor about your model:*
-
-	sailor.model("user");
-
-*Access items in your model:*
-	
-	sailor.users.on('ready', function() {
-		console.log(sailor.users); // [...items]
+	var users = sailor.model("user");
+	users.findOne{id: currentUserId}).then(function(user) {
+		user.lastLogin = Date.now();
+		user.save();
 	});
 
-*Bind the model to another object:*
-
-	var myObject = {};
-	sailor.bind("users", myObject, "Users"); // or sailor.users.bind(myObject, "Users");
-	console.log(myObject.users); // [...items]
-
-*Filter a model with Waterline:*
-
-	sailor.users.find({ age: { '>': 13 } }).on('ready', function(itms) {
-		console.log(itms); // [...items]
-	});
-
-*Create a new model item:*
-
-	var user = new sailor.user({ username: 'mrfishie' });
-	user.age = 25;
-	user.name = "Bob Bobsworth";
-	user.save().then(function() {
-		console.log("Saved changes to the user");
-	});
-
-*Update the model item:*
-
-	user.update({
-		loginCount: user.loginCount + 1,
-		status: $status.val()
-	}).then(function() {
-		console.log("Updated the user");
-	});
-
-*Destroy the model item:*
-	
-	user.destroy().then(function() {
-		console.log("Destroyed the user");
-	});
-
-### Model Definitions
-
-When defining models in your Sails server application, Sails allows you to define methods that can be called on a model. Sailor allows you to do this too, as well as define properties that are not saved on the server.
-
-	sailor.model("user", {
-		getFullName: function() {
-			return this.firstName + this.lastName;
-		},
-		foo: "bar"
-	});
-	
-	sailor.users[0].getFullName();
-	sailor.users[0].foo; // "bar"
-
-You can return a promise from this function to only set the value when the promise is resolved.
-
-### Model Connections
-
-Connections between models are an important part of any database-based application. Since Sails only provides a certain depth of models in models through its websocket interface, you can easily tell Sailor when a model connects to another.
-
-	sailor.model("user", {
-		posts: sailor.model("post");
-	});
-
-Sailor supports cyclic connections - two objects can connect to each other.
-
-### Calculated Functions
-
-Sometimes you might only want to run a function when the model changes, and then store its value. You can do this in Sailor.
-
-	sailor.model("user", {
-		somethingIntensive: sailor.calculate(function() {
-			// Do something intensive
-		})
-	});
-	user.somethingIntensive; // the result
-
-You can return a promise from this function for asynchronous calculations.
-
-### Model Class Definitions
-
-In addition to being able to define model definitions, you can also define a set of properties to be applied to the model object.
-
-	sailor.model("user", {
-		// model definitions...
-	}, {
-		getRank: function(rank) {
-			return this.search({rank: rank});
+	users.on('changed', function() {
+		$('.userList').empty();
+		for (var i = 0; i < users.length; i++) {
+			$("<div>" + users[i].username + "</div>").appendTo('.userList');
 		}
 	});
-	var admins = sailor.users.getRank("admin"); // [...items]
+
+## Specify connections
+
+Sailor lets you specify connections between models, allowing for cyclic structures.
+
+	var topics = sailor.model("topic", {
+		author: sailor.model("user"),
+		comments: sailor.model("comment")
+	});
+	var users = sailor.model("user", {
+		topics: sailor.model("topic")
+	});
+
+## Use with your favorite framework
+
+Sailor doesn't care about what you are using for the rest of your website (except for Sails, Lo-dash, and Bluebird, of course),
+and as a result, is easily integrated with your favorite web framework, be it Angular, Ember, Vue, Backbone, or anything else.
+
+	sailor.model("topic").bind($scope, "topics"); // bind a model to an Angular scope
+	sailor.model("topic").bind(vm.$data, "topics"); // bind to a Vue model
+	window.topics = Backbone.Model.extend(sailor.model("topic")); // bind to a Backbone model
+
+### Angular Binding
+
+**This feature is still in development and is not available yet**
+
+While Sailor can be used with Angular out-of-the-box, you can install the `sailor-ng` [Bower](http://bower.io/) package to
+make your site even more awesome and automatically update the server when anything changes in your scope.
+
+	sailor.model("topic").$bind($scope);
+
+
+## What's Next?
+
+Download via [Bower](http://bower.io/): `bower install sailor-client --save`
+
+Check out the [Getting Started guide](http://mrfishie.github.io/sailor/#/getStarted) and the
+[documentation](http://mrfishie.github.io/sailor/#/documentation)
