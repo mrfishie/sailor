@@ -32,15 +32,16 @@ $header-scale-bottom: 1em;
         $font-size: $header-scale-top - (($i / 5) * ($header-scale-top - $header-scale-bottom));
         font-size: $font-size;
         margin-bottom:#{$font-size / ($font-size * 0 + 1) * 10}px;
-
-        &[id]:before {
-            content:' ';
-            display:block;
-            height:$real-header-height + 20px;
-            margin:-($real-header-height + 20px) 0 0;
-        }
     }
 }
+
+// Add some margins to linked headers
+h1, h2, h3, h4, h5, h6 { &[id]:before {
+    content:' ';
+    display:block;
+    height:$real-header-height + 20px;
+    margin:-($real-header-height + 20px) 0 0;
+} }
 
 // Selection colours
 * {
