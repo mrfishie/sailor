@@ -1,10 +1,11 @@
 # [<img src="http://i.imgur.com/VjhXaUr.png" alt="Sailor logo" title="Sailor" width="804px" />](http://mrfishie.github.io/sailor)
-[![Gitter](https://badges.gitter.im/Join Chat.svg)](https://gitter.im/mrfishie/sailor?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 **The #1 way to win the internet with [Sails](http://sailsjs.org/)**
 
 ### `bower install sailor-client --save`
 ### [Website](http://mrfishie.github.io/sailor) - [Getting Started](http://mrfishie.github.io/sailor/#/getStarted) - [Documentation](http://mrfishie.github.io/sailor/#/documentation)
+
+[![Gitter](https://badges.gitter.im/Join Chat.svg)](https://gitter.im/mrfishie/sailor?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 ## What is Sailor?
 
