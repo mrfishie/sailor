@@ -1,5 +1,7 @@
 # [<img src="http://i.imgur.com/VjhXaUr.png" alt="Sailor logo" title="Sailor" width="804px" />](http://mrfishie.github.io/sailor)
 
+## Deprication Notice: While this project is still pretty new, I haven't had the time or willpower to fix many of the glaring issues and bugs in Sailor. I might start working on this project again sometime in the future, but for now, I'm not working on any updates/additions for this project.
+
 **The #1 way to win the internet with [Sails](http://sailsjs.org/)**
 
 ### `bower install sailor-client --save`
@@ -19,7 +21,7 @@ watch, or even integrate with Angular. All that with only a couple of lines of c
 See how easy it is to bind your Sails models to your browser-based Javascript code with Sailor.
 
 	var users = sailor.model("user");
-	users.findOne{id: currentUserId}).then(function(user) {
+	users.findOne({id: currentUserId}).then(function(user) {
 		user.lastLogin = Date.now();
 		user.save();
 	});
