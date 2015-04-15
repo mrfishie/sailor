@@ -20,39 +20,45 @@ watch, or even integrate with Angular. All that with only a couple of lines of c
 
 See how easy it is to bind your Sails models to your browser-based Javascript code with Sailor.
 
-	var users = sailor.model("user");
-	users.findOne({id: currentUserId}).then(function(user) {
-		user.lastLogin = Date.now();
-		user.save();
-	});
+```js
+var users = sailor.model("user");
+users.findOne({id: currentUserId}).then(function(user) {
+	user.lastLogin = Date.now();
+	user.save();
+});
 
-	users.on('changed', function() {
-		$('.userList').empty();
-		for (var i = 0; i < users.length; i++) {
-			$("<div>" + users[i].username + "</div>").appendTo('.userList');
-		}
-	});
+users.on('changed', function() {
+	$('.userList').empty();
+	for (var i = 0; i < users.length; i++) {
+		$("<div>" + users[i].username + "</div>").appendTo('.userList');
+	}
+});
+```
 
 ## Specify connections
 
 Sailor lets you specify connections between models, allowing for cyclic structures.
 
-	var topics = sailor.model("topic", {
-		author: sailor.model("user"),
-		comments: sailor.model("comment")
-	});
-	var users = sailor.model("user", {
-		topics: sailor.model("topic")
-	});
+```js
+var topics = sailor.model("topic", {
+	author: sailor.model("user"),
+	comments: sailor.model("comment")
+});
+var users = sailor.model("user", {
+	topics: sailor.model("topic")
+});
+```
 
 ## Use with your favorite framework
 
 Sailor doesn't care about what you are using for the rest of your website (except for Sails, Lo-dash, and Bluebird, of course),
 and as a result, is easily integrated with your favorite web framework, be it Angular, Ember, Vue, Backbone, or anything else.
 
-	sailor.model("topic").bind($scope, "topics"); // bind a model to an Angular scope
-	sailor.model("topic").bind(vm.$data, "topics"); // bind to a Vue model
-	window.topics = Backbone.Model.extend(sailor.model("topic")); // bind to a Backbone model
+```js
+sailor.model("topic").bind($scope, "topics"); // bind a model to an Angular scope
+sailor.model("topic").bind(vm.$data, "topics"); // bind to a Vue model
+window.topics = Backbone.Model.extend(sailor.model("topic")); // bind to a Backbone model
+```
 
 ### Angular Binding
 
@@ -61,7 +67,9 @@ and as a result, is easily integrated with your favorite web framework, be it An
 While Sailor can be used with Angular out-of-the-box, you can install the `sailor-ng` [Bower](http://bower.io/) package to
 make your site even more awesome and automatically update the server when anything changes in your scope.
 
-	sailor.model("topic").$bind($scope);
+```js
+sailor.model("topic").$bind($scope);
+```
 
 
 ## What's Next?
